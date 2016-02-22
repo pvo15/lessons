@@ -13,14 +13,14 @@ module.exports = {
  * @param callback Callback function
  */
 function insertUser(user, callback) {
-	connect(function(err, db) {
+	connect(function (err, db) {
 		if (err) {
 			console.error(err);
 			callback(err);
 			return;
 		}
 
-		db.collection('Users').insertOne(user, function(err, result) {
+		db.collection('Users').insertOne(user, function (err, result) {
 			db.close();
 
 			if (err) {
@@ -38,23 +38,24 @@ function insertUser(user, callback) {
  * @param callback Callback function
  */
 function findUser(user, callback) {
-	connect(function(err, db) {
+	connect(function (err, db) {
 		if (err) {
 			console.error(err);
 			callback(err);
 			return;
 		}
-	db.collection.find(user).limit(1).toArray(function(err, docs) {
-		db.close();
-		if (err) {
-			console.error(err);
-			callback(err);
-			return;
-		}else{
-		callback(docs);
-		}
+		db.collection("User").find(user).limit(1).toArray(function (err, docs) {
+			db.close();
+			if (err) {
+				console.error(err);
+				callback(err);
+			} else {
+				callback(null, docs);
+			}
+		});
 	});
 }
+
 
 var updateDocument = function (db, callback) {
 	var collection = db.collection('documents');
