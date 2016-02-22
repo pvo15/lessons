@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
-const users = [];
+const  db = require('./db');
 
 router.get("/",function(req,res,next){
     if(!req){
@@ -16,24 +16,45 @@ router.get("/signup",function(req,res){
     res.render("reg");
 });
 router.post("/signin",function(req,res){
+    var user = {
+        email:req.body.email,
+        password:req.body.password
+    };
+    db.findUser(user,function(err,user){
 
-    if(_.find(users, {email:req.body.email,password:req.body.password })) {
-        req.session.hasLogined = true;
-        res.redirect('/');
-    }
-    else {
-        res.redirect('/user/signin?error=yes');
-    }
+        if(err){
+            return res.status(503).send("server error");
+        }else if(user != null){
+            req.session.hasLogined = true;
+            req.session.user = user;
+            res.redirect('/');
+        }
+        else{
+            res.redirect("/user/signin?error=true");
+        }
+    });
 });
 router.post("/signup",function(req,res){
+    var user = {
+        email:req.body.email,
+        password:req.body.password
+    };
 
-    users.push({email:req.body.email,password:req.body.password});
-    res.redirect("/user/signin");
+    db.insertUser(user,function(err,result){
+        if(err) {
+            return res.status(503).send("insert user error");
+        }else {
+            res.redirect("/user/signin");
+        }
+
+    });
+
 
 });
 router.post("/signout",function(req,res){
 
     req.session.hasLogined = false;
+    req.session.user = null;
     res.redirect("/");
 
 });

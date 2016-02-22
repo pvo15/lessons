@@ -44,13 +44,13 @@ function findUser(user, callback) {
 			callback(err);
 			return;
 		}
-		db.collection("User").find(user).limit(1).toArray(function (err, docs) {
+		db.collection("Users").find(user).limit(1).toArray(function (err, docs) {
 			db.close();
 			if (err) {
 				console.error(err);
 				callback(err);
 			} else {
-				callback(null, docs);
+				callback(null, docs.length > 0 ? docs[0] : null);
 			}
 		});
 	});
