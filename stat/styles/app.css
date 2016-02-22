@@ -1,0 +1,27 @@
+body {
+  font-family: "Arial", sans-serif; }
+
+form {
+  display: block;
+  width: 200px;
+  margin: 0 auto; }
+
+input[type=submit] {
+  display: block;
+  width: 200px;
+  border: none;
+  background: orange;
+  padding: 10px; }
+
+input[type=text]:hover {
+  border: solid #94ff1c; }
+
+input[type=password]:hover {
+  border: solid #94ff1c; }
+
+div {
+  display: block;
+  width: 200px;
+  margin: 0 auto; }
+
+/*# sourceMappingURL=app.css.map */

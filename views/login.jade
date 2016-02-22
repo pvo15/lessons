@@ -1,0 +1,21 @@
+extends layouts
+
+block header
+    div.row
+        div.medium-4.columns.large-offset-4
+            if error
+                h5 email or password not found
+            else
+                h5 login
+block content
+    form(action="/user/signin",method="post")
+        div.row
+            div.medium-4.columns.large-offset-4
+                lable name
+                input(type="text",name="email",required=true)
+        div.row
+            div.medium-4.columns.large-offset-4
+                label password
+                input(type="password",name="password",required=true)
+                input.button(type="submit",value="login")
+                a.button(href="/user/signup") reg
