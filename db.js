@@ -38,6 +38,12 @@ function insertUser(user, callback) {
  * @param callback Callback function
  */
 function findUser(user, callback) {
+	connect(function(err, db) {
+		if (err) {
+			console.error(err);
+			callback(err);
+			return;
+		}
 	db.collection.find(user).limit(1).toArray(function(err, docs) {
 		db.close();
 		if (err) {
