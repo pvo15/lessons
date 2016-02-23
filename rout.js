@@ -43,8 +43,10 @@ router.post("/signup",function(req,res){
     db.insertUser(user,function(err,result){
         if(err) {
             return res.status(503).send("insert user error");
-        }else {
+        }else if(result != null) {
             res.redirect("/user/signin");
+        } else{
+            res.redirect("/user/signin?used=true");
         }
 
     });
@@ -65,4 +67,3 @@ module.exports = router;
 
 
 
-router

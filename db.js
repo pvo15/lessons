@@ -19,17 +19,27 @@ function insertUser(user, callback) {
 			callback(err);
 			return;
 		}
-
-		db.collection('Users').insertOne(user, function (err, result) {
-			db.close();
-
+			var obj = {email:user.email};
+		findFunction(obj,function(err,result){
 			if (err) {
+				console.error(err);
 				callback(err);
-			} else {
-				console.log(result);// TODO: replace with insertedId getting
-				callback(null);
+				return;
+			} else if(result == null) {
+					db.collection('Users').insertOne(user, function (err, result) {
+						db.close();
+						if (err) {
+							callback(err);
+						} else {
+							callback(null,result);
+						}
+					});
+			}else {
+				callback(null,null);
 			}
+
 		});
+
 	});
 }
 
@@ -37,6 +47,7 @@ function insertUser(user, callback) {
  * @param user User query object
  * @param callback Callback function
  */
+var findFunction = findUser;
 function findUser(user, callback) {
 	connect(function (err, db) {
 		if (err) {
