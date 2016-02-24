@@ -20,7 +20,7 @@ function insertUser(user, callback) {
 			return;
 		}
 			var obj = {email:user.email};
-		findFunction(obj,function(err,result){
+		findUser(obj,function(err,result){
 			if (err) {
 				console.error(err);
 				callback(err);
@@ -47,7 +47,6 @@ function insertUser(user, callback) {
  * @param user User query object
  * @param callback Callback function
  */
-var findFunction = findUser;
 function findUser(user, callback) {
 	connect(function (err, db) {
 		if (err) {
