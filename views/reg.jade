@@ -3,6 +3,8 @@ extends layouts
 block header
     div.footer
         h1 registaration
+        if used
+            h5 used mail
 block content
     form(action="/user/signup",method="post")
         lable name

@@ -13,7 +13,7 @@ router.get("/signin",function(req,res){
     res.render("login",{error:req.query.error});
 });
 router.get("/signup",function(req,res){
-    res.render("reg");
+    res.render("reg",{used:req.query.used});
 });
 router.post("/signin",function(req,res){
     var user = {
@@ -44,9 +44,11 @@ router.post("/signup",function(req,res){
         if(err) {
             return res.status(503).send("insert user error");
         }else if(result != null) {
-            res.redirect("/user/signin");
+            res.redirect("/user/signin?used=false");
         } else{
-            res.redirect("/user/signin?used=true");
+
+            res.redirect("/user/signup?used=true");
+
         }
 
     });
