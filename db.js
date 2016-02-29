@@ -108,23 +108,27 @@ function changepassword (user, callback) {
 			callback(err);
 			return;
 		}
-		var obj = {email:user.email.email};
+		var obj = {
+			email:user.email,
+			password:user.oldpass
+		};
 		findUser(obj,function(err,result){
 			if(err){
 				console.error(err);
 				callback(err);
 				return;
 			}
-			console.log("old:",result);
-				db.collection("Users").updateOne(result,{$set:{password:user.newpass}}, function (err, docs) {
-					db.close();
-					if (err) {
-						console.error(err);
-						callback(err);
-						return;
-					}
-					callback(null, docs);
-				});
+			else if(result != null) {
+					db.collection("Users").updateOne(result, {$set: {password: user.newpass}}, function (err, docs) {
+						db.close();
+						if (err) {
+							console.error(err);
+							callback(err);
+							return;
+						}
+						callback(null, docs);
+					});
+				}else callback(null,null);
 		});
 	})
 };

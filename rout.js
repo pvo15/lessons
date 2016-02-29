@@ -83,7 +83,8 @@ router.post("/rname",function(req,res){
 
 router.post("/repass",function(req,res) {
     var user = {
-        email: req.session.user,
+        email: req.session.user.email,
+        oldpass:req.body.old,
         newpass: req.body.password,
         repassword: req.body.repassword
     };
@@ -94,16 +95,19 @@ router.post("/repass",function(req,res) {
                     return res.status(503).send("insert user error");
                 } else if (result != null) {
                     req.session.hasLogined = true;
-                    req.session.user = result.email;
+                    req.session.user = result;
                     res.redirect("/");
-                } else {
-                    res.redirect("/user/login");
+                } else if (result == null) {
+                    res.redirect("/user/repass?error=not");
+                }
+                else  {
+                    res.redirect("/user/repass");
                 }
 
             })
         }
     else {
-        res.redirect("/repass");
+        res.redirect("/user/repass?error=true");
     }
 
 });
