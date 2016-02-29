@@ -3,7 +3,15 @@ const router = express.Router();
 const _ = require("lodash");
 const  db = require('./db');
 
-router.get("/",function(req,res,next){
+function requireLogin(req,res,next){
+    if(req.session.hasLogined){
+        next();
+    }else{
+        res.redirect("/user/signin");
+    }
+
+}
+router.get("/",requireLogin,function(req,res,next){
     if(!req){
 
     }
@@ -12,13 +20,13 @@ router.get("/",function(req,res,next){
 router.get("/signin",function(req,res){
     res.render("login",{error:req.query.error});
 });
-router.get("/repass",function(req,res){
+router.get("/repass",requireLogin,function(req,res){
     res.render("repass",{error:req.query.error});
 });
 router.get("/signup",function(req,res){
     res.render("reg",{used:req.query.used});
 });
-router.get("/rname",function(req,res){
+router.get("/rname",requireLogin,function(req,res){
     res.render("rname",{used:req.query.used});
 });
 router.post("/signin",function(req,res){
@@ -72,8 +80,7 @@ router.post("/rname",function(req,res){
        if(err) {
            return res.status(503).send("insert user error");
        }else if(result != null) {
-           req.session.hasLogined = true;
-           req.session.user = result;
+           req.session.user.email = user.email;
            res.redirect("/");
        } else{
            res.redirect("/user/rname?used=true");
@@ -94,8 +101,6 @@ router.post("/repass",function(req,res) {
                 if (err) {
                     return res.status(503).send("insert user error");
                 } else if (result != null) {
-                    req.session.hasLogined = true;
-                    req.session.user = result;
                     res.redirect("/");
                 } else if (result == null) {
                     res.redirect("/user/repass?error=not");
