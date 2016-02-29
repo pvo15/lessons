@@ -3,3 +3,6 @@ extends layouts
 block content
     form(action="/user/signout",method="post")
         input(type="submit" value="signout")
+    a(href="/user/rname") rename
+    br
+    a(href="/user/repass") repass

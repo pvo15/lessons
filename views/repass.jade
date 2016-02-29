@@ -1,0 +1,21 @@
+extends layouts
+
+block header
+    div.row
+        div.medium-4.columns.large-offset-4
+            h4 edit
+block content
+    form(action="/user/repass",method="post")
+        div.row
+            div.medium-4.columns.large-offset-4
+                lable old passseord
+                input(type="password",name="oldpassword",required=true)
+        div.row
+            div.medium-4.columns.large-offset-4
+                label new password
+                input(type="password",name="password",required=true)
+                if err
+                    label not korekt ty agan
+                label repassword
+                input(type="password",name="repassword",required=true)
+                input.button(type="submit",value="save")

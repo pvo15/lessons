@@ -1,11 +1,13 @@
 "use strict";
 
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017/lesson';
+const url = 'mongodb://127.0.0.1:27017/lesson';
 
 module.exports = {
 	insertUser: insertUser,
-	findUser: findUser
+	findUser: findUser,
+	updateDocument:updateDocument,
+	changepassword:changepassword
 };
 
 /**
@@ -43,6 +45,8 @@ function insertUser(user, callback) {
 	});
 }
 
+
+
 /**
  * @param user User query object
  * @param callback Callback function
@@ -66,24 +70,67 @@ function findUser(user, callback) {
 	});
 }
 
-
-var updateDocument = function (db, callback) {
-	var collection = db.collection('documents');
-	collection.updateOne({a: 2}
-		, {$set: {b: 1}}, function (err, result) {
-			if (err) {
+ function updateDocument (user, callback) {
+	 connect(function (err, db) {
+			 if (err) {
+				 console.error(err);
+				 callback(err);
+				 return;
+			 }
+		 var obj = {email:user.email};
+		 findUser(user,function(err,result){
+				 if(err){
+					 console.error(err);
+					 callback(err);
+				 }
+				 else if( result != null){
+						callback(null,null);
+				 }
+				 else if (result == null){
+					 var oldmail = {email:user.oldemail};
+					 db.collection("Users").updateOne(oldmail,{$set:{email:user.email}}, function (err, docs) {
+						 db.close();
+						 if (err) {
+									 console.error(err);
+									 callback(err);
+									 return;
+								 }
+								 callback(null, docs);
+							 });
+				 }
+			 });
+	 });
+};
+function changepassword (user, callback) {
+	connect(function(err,db){
+		if (err) {
+			console.error(err);
+			callback(err);
+			return;
+		}
+		var obj = {email:user.email.email};
+		findUser(obj,function(err,result){
+			if(err){
 				console.error(err);
 				callback(err);
 				return;
 			}
-			console.log("Updated the document with the field a equal to 2");
-			callback(null, result);
+			console.log("old:",result);
+				db.collection("Users").updateOne(result,{$set:{password:user.newpass}}, function (err, docs) {
+					db.close();
+					if (err) {
+						console.error(err);
+						callback(err);
+						return;
+					}
+					callback(null, docs);
+				});
 		});
+	})
 };
-
 function connect(callback) {
 	MongoClient.connect(url, function (err, db) {
-		console.log("Connected correctly to server");
+		console.log("Connected correctly to server: ",url);
 		callback(err, db);
 	});
 }

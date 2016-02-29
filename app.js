@@ -28,13 +28,7 @@ function requireLogin(req,res,next){
 
 app.get("/",requireLogin,function(req,res){
     res.render("home");
-
-
 });
-
-
-
-
 
 
 

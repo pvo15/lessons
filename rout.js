@@ -12,8 +12,14 @@ router.get("/",function(req,res,next){
 router.get("/signin",function(req,res){
     res.render("login",{error:req.query.error});
 });
+router.get("/repass",function(req,res){
+    res.render("repass",{error:req.query.error});
+});
 router.get("/signup",function(req,res){
     res.render("reg",{used:req.query.used});
+});
+router.get("/rname",function(req,res){
+    res.render("rname",{used:req.query.used});
 });
 router.post("/signin",function(req,res){
     var user = {
@@ -21,7 +27,6 @@ router.post("/signin",function(req,res){
         password:req.body.password
     };
     db.findUser(user,function(err,user){
-
         if(err){
             return res.status(503).send("server error");
         }else if(user != null){
@@ -48,12 +53,8 @@ router.post("/signup",function(req,res){
         } else{
 
             res.redirect("/user/signup?used=true");
-
         }
-
     });
-
-
 });
 router.post("/signout",function(req,res){
 
@@ -62,6 +63,51 @@ router.post("/signout",function(req,res){
     res.redirect("/");
 
 });
+router.post("/rname",function(req,res){
+    var user = {
+        email:req.body.email,
+        oldemail:req.session.user.email
+    };
+   db.updateDocument(user,function(err,result){
+       if(err) {
+           return res.status(503).send("insert user error");
+       }else if(result != null) {
+           req.session.hasLogined = true;
+           req.session.user = result;
+           res.redirect("/");
+       } else{
+           res.redirect("/user/rname?used=true");
+       }
+   })
+});
+
+router.post("/repass",function(req,res) {
+    var user = {
+        email: req.session.user,
+        newpass: req.body.password,
+        repassword: req.body.repassword
+    };
+    if (user.newpass === user.repassword) {
+
+    db.changepassword(user, function (err, result) {
+                if (err) {
+                    return res.status(503).send("insert user error");
+                } else if (result != null) {
+                    req.session.hasLogined = true;
+                    req.session.user = result.email;
+                    res.redirect("/");
+                } else {
+                    res.redirect("/user/login");
+                }
+
+            })
+        }
+    else {
+        res.redirect("/repass");
+    }
+
+});
+
 
 
 module.exports = router;
