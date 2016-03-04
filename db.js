@@ -70,6 +70,34 @@ function findUser(user, callback) {
 	});
 }
 
+/*
+updateUser(id, ['email', 'image'], { email: '123@321.com', image: 'image.jpg' }, function() {});
+
+
+
+
+
+function updateUser(id, fields, user, callback) {
+
+	const updateObject = {};
+
+	_.each(fields, function(field) {
+		updateObject[field] = user[field];
+	})
+
+	db.collection("Users").updateOne({ _id: new ObjectID(id) },{$set:updateObject}, function (err, docs) {
+		db.close();
+		if (err) {
+			console.error(err);
+			callback(err);
+			return;
+		}
+
+		callback(null, docs);
+	});
+}
+ */
+
  function updateDocument (user, callback) {
 	 connect(function (err, db) {
 			 if (err) {

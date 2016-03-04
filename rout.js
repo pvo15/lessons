@@ -134,6 +134,8 @@ router.post("/photo", upload, function(req, res){
 
     req.session.user.image = req.file.filename;
 
+
+
     res.redirect("/");
 });
 
