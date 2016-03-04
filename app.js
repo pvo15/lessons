@@ -27,9 +27,7 @@ function requireLogin(req,res,next){
 }
 
 app.get("/",requireLogin,function(req,res){
-    res.render("home");
+    res.render("home", { user: req.session.user });
 });
-
-
 
 app.listen(3000);

@@ -9,10 +9,10 @@ var storage =   multer.diskStorage({
         callback(null, './stat/uploads/');
     },
     filename: function (req, file, callback) {
-        callback(null, file.fieldname + '-' + Date.now());
+        callback(null, file.originalname);
     }
 });
-var upload = multer({ storage : storage}).single('userPhoto');
+var upload = multer({ storage : storage }).single('userPhoto');
 
 function requireLogin(req,res,next){
     if(req.session.hasLogined){
@@ -126,13 +126,15 @@ router.post("/repass",function(req,res) {
     }
 
 });
-router.post("/photo",upload,function(req,res){
+router.post("/photo", upload, function(req, res){
 
     console.log(req.body);
     console.log(req.file);
     console.log(req.file.filename);
 
-    res.redirect("/",{user:req.file.filename});
+    req.session.user.image = req.file.filename;
+
+    res.redirect("/");
 });
 
 

@@ -11,6 +11,6 @@ block content
             form(enctype="multipart/form-data"  action = "/user/photo" method="post")
                 input.button(type="file" name="userPhoto")
                 input.button(type="submit" value="Upload Image" name="submit")
-                if user
-                    img(src="/stat/uploads/"+ user)
+                if user.image
+                    img(src="/stat/uploads/"+ user.image)
 
