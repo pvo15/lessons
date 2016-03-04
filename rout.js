@@ -2,6 +2,17 @@ const express = require("express");
 const router = express.Router();
 const _ = require("lodash");
 const  db = require('./db');
+const multer = require("multer");
+
+var storage =   multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './stat/uploads/');
+    },
+    filename: function (req, file, callback) {
+        callback(null, file.fieldname + '-' + Date.now());
+    }
+});
+var upload = multer({ storage : storage}).single('userPhoto');
 
 function requireLogin(req,res,next){
     if(req.session.hasLogined){
@@ -87,7 +98,6 @@ router.post("/rname",function(req,res){
        }
    })
 });
-
 router.post("/repass",function(req,res) {
     var user = {
         email: req.session.user.email,
@@ -115,6 +125,14 @@ router.post("/repass",function(req,res) {
         res.redirect("/user/repass?error=true");
     }
 
+});
+router.post("/photo",upload,function(req,res){
+
+    console.log(req.body);
+    console.log(req.file);
+    console.log(req.file.filename);
+
+    res.redirect("/",{user:req.file.filename});
 });
 
 
