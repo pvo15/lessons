@@ -2,12 +2,17 @@
 
 const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://127.0.0.1:27017/lesson';
+const ObjectID = require('mongodb').ObjectID;
+const _ = require("lodash");
 
-module.exports = {
+
+
+		module.exports = {
 	insertUser: insertUser,
 	findUser: findUser,
 	updateDocument:updateDocument,
-	changepassword:changepassword
+	changepassword:changepassword,
+	updateUser:updateUser
 };
 
 /**
@@ -70,33 +75,31 @@ function findUser(user, callback) {
 	});
 }
 
-/*
-updateUser(id, ['email', 'image'], { email: '123@321.com', image: 'image.jpg' }, function() {});
-
-
-
-
-
 function updateUser(id, fields, user, callback) {
 
 	const updateObject = {};
+	connect(function (err, db) {
+				if (err) {
+					console.error(err);
+					callback(err);
+					return;
+				}
+				_.each(fields, function (field) {
+					updateObject[field] = user[field];
+				});
 
-	_.each(fields, function(field) {
-		updateObject[field] = user[field];
-	})
+				db.collection("Users").updateOne({_id: new ObjectID(id)}, {$set: updateObject}, function (err, docs) {
+					db.close();
+					if (err) {
+						console.error(err);
+						callback(err);
+						return;
+					}
 
-	db.collection("Users").updateOne({ _id: new ObjectID(id) },{$set:updateObject}, function (err, docs) {
-		db.close();
-		if (err) {
-			console.error(err);
-			callback(err);
-			return;
-		}
-
-		callback(null, docs);
-	});
+					callback(null, docs);
+				});
+		})
 }
- */
 
  function updateDocument (user, callback) {
 	 connect(function (err, db) {

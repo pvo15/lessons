@@ -127,16 +127,16 @@ router.post("/repass",function(req,res) {
 
 });
 router.post("/photo", upload, function(req, res){
-
-    console.log(req.body);
-    console.log(req.file);
-    console.log(req.file.filename);
-
     req.session.user.image = req.file.filename;
 
 
-
-    res.redirect("/");
+    db.updateUser(req.session.user._id,["image"],req.session.user,function(err,result){
+            if (err) {
+                return res.status(503).send("insert photo error");
+            } else if (result != null) {
+                res.redirect("/");
+            }
+        });
 });
 
 
