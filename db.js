@@ -63,14 +63,19 @@ function findUser(user, callback) {
 			return;
 		}
 				db.collection("Users").find({email:user.email}).limit(1).toArray(function (err, docs) {
+					console.log(docs)
 					db.close();
 					if (err) {
 						console.error(err);
 						callback(err);
 					} else if (docs.length > 0) {
-
+						console.log(docs[0],":",user.password)
 						bcrypt.compare(user.password, docs[0].password, function (err, res) {
+							console.log(res);
+							if(res)
 							callback(null, docs[0]);
+							else
+								callback(null, null);
 						})
 					}
 					else {
@@ -91,7 +96,6 @@ function updateUser(id, fields, user, callback) {
 				_.each(fields, function (field) {
 					updateObject[field] = user[field];
 				});
-
 				db.collection("Users").updateOne({_id: new ObjectID(id)}, {$set: updateObject}, function (err, docs) {
 					db.close();
 					if (err) {
@@ -99,7 +103,6 @@ function updateUser(id, fields, user, callback) {
 						callback(err);
 						return;
 					}
-
 					callback(null, docs);
 				});
 		})
