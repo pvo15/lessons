@@ -4,6 +4,9 @@ const _ = require("lodash");
 const  db = require('./db');
 const multer = require("multer");
 
+var bcrypt = require('bcrypt-nodejs');
+var salt = bcrypt.genSaltSync(10);
+
 var storage =   multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, './stat/uploads/');
@@ -41,9 +44,11 @@ router.get("/rname",requireLogin,function(req,res){
     res.render("rname",{used:req.query.used});
 });
 router.post("/signin",function(req,res){
+    var hash = bcrypt.hashSync(req.body.password, salt);
+
     var user = {
         email:req.body.email,
-        password:req.body.password
+        password:hash
     };
     db.findUser(user,function(err,user){
         if(err){
@@ -59,11 +64,12 @@ router.post("/signin",function(req,res){
     });
 });
 router.post("/signup",function(req,res){
-    var user = {
-        email:req.body.email,
-        password:req.body.password
-    };
+    var hash = bcrypt.hashSync(req.body.password, salt);
 
+        var user = {
+            email:req.body.email,
+            password: hash
+        };
     db.insertUser(user,function(err,result){
         if(err) {
             return res.status(503).send("insert user error");
@@ -118,7 +124,6 @@ router.post("/repass",function(req,res) {
                 else  {
                     res.redirect("/user/repass");
                 }
-
             })
         }
     else {
@@ -128,8 +133,6 @@ router.post("/repass",function(req,res) {
 });
 router.post("/photo", upload, function(req, res){
     req.session.user.image = req.file.filename;
-
-
     db.updateUser(req.session.user._id,["image"],req.session.user,function(err,result){
             if (err) {
                 return res.status(503).send("insert photo error");

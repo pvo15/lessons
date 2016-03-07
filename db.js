@@ -4,8 +4,8 @@ const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://127.0.0.1:27017/lesson';
 const ObjectID = require('mongodb').ObjectID;
 const _ = require("lodash");
-
-
+const bcrypt = require('bcrypt-nodejs');
+const salt = bcrypt.genSaltSync(10);
 
 		module.exports = {
 	insertUser: insertUser,
@@ -51,7 +51,6 @@ function insertUser(user, callback) {
 }
 
 
-
 /**
  * @param user User query object
  * @param callback Callback function
@@ -63,18 +62,23 @@ function findUser(user, callback) {
 			callback(err);
 			return;
 		}
-		db.collection("Users").find(user).limit(1).toArray(function (err, docs) {
-			db.close();
-			if (err) {
-				console.error(err);
-				callback(err);
-			} else {
-				callback(null, docs.length > 0 ? docs[0] : null);
-			}
-		});
-	});
-}
+				db.collection("Users").find({email:user.email}).limit(1).toArray(function (err, docs) {
+					db.close();
+					if (err) {
+						console.error(err);
+						callback(err);
+					} else if (docs.length > 0) {
 
+						bcrypt.compare(user.password, docs[0].password, function (err, res) {
+							callback(null, docs[0]);
+						})
+					}
+					else {
+						callback(null, null);
+					}
+				});
+		});
+}
 function updateUser(id, fields, user, callback) {
 
 	const updateObject = {};
