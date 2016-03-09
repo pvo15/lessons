@@ -44,19 +44,26 @@ router.get("/rname",requireLogin,function(req,res){
     res.render("rname",{used:req.query.used});
 });
 router.post("/signin",function(req,res){
-    var hash = bcrypt.hashSync(req.body.password, salt);
 
     var user = {
         email:req.body.email,
-        password:hash
+        password:req.body.password
     };
     db.findUser(user,function(err,user){
         if(err){
             return res.status(503).send("server error");
         }else if(user != null){
-            req.session.hasLogined = true;
-            req.session.user = user;
-            res.redirect('/');
+            bcrypt.compare(req.body.password, user.password, function (err, result) {
+                console.log(result);
+                if(result) {
+                    req.session.hasLogined = true;
+                    req.session.user = user;
+                    res.redirect('/');
+                }
+                else
+                    res.redirect("/user/signin?error=true");
+            })
+
         }
         else{
             res.redirect("/user/signin?error=true");

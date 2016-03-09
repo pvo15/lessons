@@ -69,14 +69,7 @@ function findUser(user, callback) {
 						console.error(err);
 						callback(err);
 					} else if (docs.length > 0) {
-						console.log(docs[0],":",user.password)
-						bcrypt.compare(user.password, docs[0].password, function (err, res) {
-							console.log(res);
-							if(res)
 							callback(null, docs[0]);
-							else
-								callback(null, null);
-						})
 					}
 					else {
 						callback(null, null);
