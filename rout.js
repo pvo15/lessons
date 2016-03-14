@@ -51,7 +51,7 @@ router.post("/signin",function(req,res){
     };
     db.findUser(user,function(err,user){
         if(err){
-            return res.status(503).send("server error");
+            return res.status(500).send("server error");
         }else if(user != null){
             bcrypt.compare(req.body.password, user.password, function (err, result) {
                 console.log(result);
@@ -79,7 +79,7 @@ router.post("/signup",function(req,res){
         };
     db.insertUser(user,function(err,result){
         if(err) {
-            return res.status(503).send("insert user error");
+            return res.status(500).send("insert user error");
         }else if(result != null) {
             res.redirect("/user/signin?used=false");
         } else{
@@ -102,7 +102,7 @@ router.post("/rname",function(req,res){
     };
    db.updateDocument(user,function(err,result){
        if(err) {
-           return res.status(503).send("insert user error");
+           return res.status(500).send("insert user error");
        }else if(result != null) {
            req.session.user.email = user.email;
            res.redirect("/");
@@ -122,7 +122,7 @@ router.post("/repass",function(req,res) {
 
     db.changepassword(user, function (err, result) {
                 if (err) {
-                    return res.status(503).send("insert user error");
+                    return res.status(500).send("insert user error");
                 } else if (result != null) {
                     res.redirect("/");
                 } else if (result == null) {
@@ -142,7 +142,7 @@ router.post("/photo", upload, function(req, res){
     req.session.user.image = req.file.filename;
     db.updateUser(req.session.user._id,["image"],req.session.user,function(err,result){
             if (err) {
-                return res.status(503).send("insert photo error");
+                return res.status(500).send("insert photo error");
             } else if (result != null) {
                 res.redirect("/");
             }
