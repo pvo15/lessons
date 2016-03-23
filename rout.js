@@ -100,7 +100,7 @@ router.post("/rname",function(req,res){
         email:req.body.email,
         oldemail:req.session.user.email
     };
-   db.updateDocument(user,function(err,result){
+   db.updateUser(req.session.user.id, ['email'], user,function(err,result){
        if(err) {
            return res.status(500).send("insert user error");
        }else if(result != null) {
@@ -112,15 +112,9 @@ router.post("/rname",function(req,res){
    })
 });
 router.post("/repass",function(req,res) {
-    var user = {
-        email: req.session.user.email,
-        oldpass:req.body.old,
-        newpass: req.body.password,
-        repassword: req.body.repassword
-    };
-    if (user.newpass === user.repassword) {
-
-    db.changepassword(user, function (err, result) {
+    var hash = bcrypt.hashSync(req.body.password, salt);
+    
+    db.updateUser(req.session.user.id,["password"],{password:hash}, function (err, result) {
                 if (err) {
                     return res.status(500).send("insert user error");
                 } else if (result != null) {
@@ -132,11 +126,6 @@ router.post("/repass",function(req,res) {
                     res.redirect("/user/repass");
                 }
             })
-        }
-    else {
-        res.redirect("/user/repass?error=true");
-    }
-
 });
 router.post("/photo", upload, function(req, res){
     req.session.user.image = req.file.filename;
