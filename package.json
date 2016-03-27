@@ -1,0 +1,22 @@
+{
+  "name": "test",
+  "version": "0.0.1",
+  "main": "app.js",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "1.14.x",
+    "express": "4.13.x",
+    "express-session": "^1.13.0",
+    "jade": "1.11.x",
+    "lodash": "^4.5.0",
+    "mongodb": "^2.1.7",
+    "multer": "^1.1.0",
+    "pg": "^4.5.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pvo",
+  "license": "ISC",
+  "description": ""
+}

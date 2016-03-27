@@ -1,0 +1,20 @@
+extends layouts
+
+block header
+    div.row
+        div.medium-4.columns.large-offset-4
+            div.footer
+                h1 registration
+                if used
+                    h5 used mail
+block content
+    form(action="/user/signup",method="post")
+        div.row
+            div.medium-4.columns.large-offset-4
+                lable email
+                input(type="email",name="email",required=true)
+        div.row
+            div.medium-4.columns.large-offset-4
+                label password
+                    input(type="password",name="password",required=true)
+                input(type="submit",value="register")
