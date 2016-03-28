@@ -2,7 +2,7 @@
 
 
 const pg = require("pg");
-const conString = "postgres://postgres:12345@localhost:5432/test";
+const conString = "postgres://postgres:12345@127.0.0.1:5432/test";
 const client = new pg.Client(conString);
 
 const _ = require("lodash");
@@ -14,7 +14,8 @@ module.exports = {
 	findUser: findUser,
 	updateDocument: updateDocument,
 	changepassword: changepassword,
-	updateUser: updateUser
+	updateUser: updateUser,
+	Count:Count
 };
 
 /**
@@ -68,16 +69,16 @@ function findUser(user, callback) {
 			return;
 		}
 
+
 		db.query('SELECT * FROM users WHERE email = $1 LIMIT 1', [user.email], function (err, docs) {
 			done();
-
 			if (err) {
 				console.error(err);
 				callback(err);
 				return;
 			}
 
-			console.log(docs);
+			console.log("sdd",docs.rows[0]);
 
 			if (docs.rows.length > 0) {
 				callback(null, docs.rows[0]);
@@ -198,7 +199,21 @@ function connect(callback) {
 		callback(err, client, done);
 	});
 }
-
+function  Count(callback){
+	connect(function (err, db,done) {
+		if (err) {
+			console.error(err);
+			callback(err);
+			done();
+			return;
+		}
+		db.query('select id,email from users;', function (err, doc) {
+			done();
+			console.log("id", doc);
+			callback(null, doc.rows);
+		});
+	});
+}
 
 /*
 

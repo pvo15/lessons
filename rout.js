@@ -49,12 +49,14 @@ router.post("/signin",function(req,res){
         email:req.body.email,
         password:req.body.password
     };
+    var hash = bcrypt.hashSync(req.body.password, salt);
+
     db.findUser(user,function(err,user){
         if(err){
             return res.status(500).send("server error");
         }else if(user != null){
-            bcrypt.compare(req.body.password, user.password, function (err, result) {
-                console.log(result);
+            console.log(hash )
+            bcrypt.compare( req.body.password, user.password ,function (err, result) {
                 if(result) {
                     req.session.hasLogined = true;
                     req.session.user = user;
@@ -128,6 +130,10 @@ router.post("/repass",function(req,res) {
             })
 });
 router.post("/photo", upload, function(req, res){
+    if (!req.file) {
+        return res.redirect("/");
+    }
+
     req.session.user.image = req.file.filename;
     db.updateUser(req.session.user._id,["image"],req.session.user,function(err,result){
             if (err) {

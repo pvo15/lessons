@@ -7,6 +7,7 @@ const app = express();
 const body = require("body-parser");
 const router = require("./rout");
 const  session = require('express-session');
+const   db = require("./db.js");
 
 var user = [];
 var hasLogin = false;
@@ -14,7 +15,7 @@ var hasLogin = false;
 app.use("/stat",express.static(__dirname+'/stat'));
 app.use(body.urlencoded({extended:true}));
 app.set("view engine","jade");
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}));
+app.use(session({ secret: 'keyboard cat'}));
 app.use('/user', router);
 
 function requireLogin(req,res,next){
@@ -27,7 +28,15 @@ function requireLogin(req,res,next){
 }
 
 app.get("/",requireLogin,function(req,res){
-    res.render("home", { user: req.session.user });
+    db.Count(function(err,result){
+        if(err){
+            console.error(err)
+            return;
+        }
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",result)
+        res.render("home", { user: req.session.user ,count:result});
+    });
+
 });
 
 app.listen(3000);
