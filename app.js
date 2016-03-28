@@ -15,7 +15,7 @@ var hasLogin = false;
 app.use("/stat",express.static(__dirname+'/stat'));
 app.use(body.urlencoded({extended:true}));
 app.set("view engine","jade");
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}));
+app.use(session({ secret: 'keyboard cat'}));
 app.use('/user', router);
 
 function requireLogin(req,res,next){

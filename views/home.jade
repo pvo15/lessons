@@ -14,6 +14,9 @@ block content
                 if user.image
                     img(src="/stat/uploads/"+ user.image)
                 if count
-                    each val in count
-                        p  #{val.id} : #{val.email}
+                    table
+                        each val in count
+                            tr
+                                td #{val.id}
+                                td #{val.email}
 
