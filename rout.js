@@ -130,6 +130,10 @@ router.post("/repass",function(req,res) {
             })
 });
 router.post("/photo", upload, function(req, res){
+    if (!req.file) {
+        return res.redirect("/");
+    }
+
     req.session.user.image = req.file.filename;
     db.updateUser(req.session.user._id,["image"],req.session.user,function(err,result){
             if (err) {
